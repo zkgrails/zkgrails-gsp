@@ -13,7 +13,7 @@ import org.grails.plugins.zkui.util.UriUtil
 import org.zkoss.zk.ui.Executions
 import org.zkoss.zul.impl.InputElement
 
-class ZkuiGrailsPlugin {
+class ZkTaglibsGrailsPlugin {
     // the plugin version
     def version = "0.3.1"
     // the version or versions of Grails the plugin is designed for
@@ -22,14 +22,6 @@ class ZkuiGrailsPlugin {
     def dependsOn = [:]
 
     def loadAfter = ['core', 'hibernate', 'controllers']
-
-    def artefacts = [
-            org.grails.plugins.zkui.artefacts.ComposerArtefactHandler
-    ]
-
-    def watchedResources = [
-            "file:./grails-app/composers/**/*Composer.groovy",
-            "file:./plugins/*/grails-app/composers/**/*Composer.groovy"]
 
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
@@ -42,14 +34,14 @@ class ZkuiGrailsPlugin {
     // TODO Fill in these fields
     def author = "groovyquan"
     def authorEmail = "groovyquan[at]gmail[dot]com"
-    def title = "Grails ZK UI Plugin"
+    def title = "Taglibs plugin for ZK"
     def description = '''\\
 ZK UI plugin,the same as the ZKGrails plugin, seamlessly integrates ZK with Grails' infrastructures.
 The different is it more likely to use the Grails' infrastructures such as gsp, controllers rather than zk's zul.
 '''
 
     // URL to the plugin's documentation
-    def documentation = "http://grails.org/plugin/zkui"
+    def documentation = "http://grails.org/plugin/zk-taglibs"
 
     static final String GOSIV_CLASS =
     "org.grails.plugins.zkui.ZkuiGrailsOpenSessionInViewFilter"
@@ -104,15 +96,6 @@ The different is it more likely to use the Grails' infrastructures such as gsp, 
 
     def doWithSpring = {
         "webManagerInit"(org.grails.plugins.zkui.WebManagerInit)
-        "zkComponentBuilder"(org.grails.plugins.zkui.ZkComponentBuilder) { bean ->
-            bean.scope = "prototype"
-        }
-        application.composerClasses.each { composerClass ->
-            "${composerClass.clazz.name}"(composerClass.clazz) { bean ->
-                bean.scope = "prototype"
-                bean.autowire = "byName"
-            }
-        }
     }
 
     def doWithDynamicMethods = { ctx ->
@@ -189,75 +172,7 @@ The different is it more likely to use the Grails' infrastructures such as gsp, 
                     //todo the remaining errorMessage
                 }
             }
-        }
-
-        org.zkoss.zk.ui.Session.metaClass.getAt = { String name ->
-            delegate.getAttribute(name)
-        }
-
-        org.zkoss.zk.ui.Session.metaClass.putAt = { String name, value ->
-            delegate.setAttribute(name, value)
-        }
-
-        org.zkoss.zk.ui.Execution.metaClass.getAt = { String name ->
-            delegate.getAttribute(name)
-        }
-
-        org.zkoss.zk.ui.Execution.metaClass.putAt = { String name, value ->
-            delegate.setAttribute(name, value)
-        }
-
-        def redirect = new RedirectDynamicMethod(ctx)
-        def redirectObject = {Map args ->
-            redirect.invoke(delegate, "redirect", args)
-        }
-        def bind = new BindDynamicMethod()
-        def paramsObject = {-> RCH.currentRequestAttributes().params }
-        def flashObject = {-> RCH.currentRequestAttributes().flashScope }
-        def executionObject = {-> Executions.current }
-        def sessionObject = {-> Executions.current.session }
-        if (manager?.hasGrailsPlugin("controllers")) {
-            for (namespace in gspTagLibraryLookup.availableNamespaces) {
-                def propName = GrailsClassUtils.getGetterName(namespace)
-                def namespaceDispatcher = gspTagLibraryLookup.lookupNamespaceDispatcher(namespace)
-                def composerClasses = application.composerClasses*.clazz
-                for (Class composerClass in composerClasses) {
-                    MetaClass mc = composerClass.metaClass
-                    if (!mc.getMetaProperty(namespace)) {
-                        mc."$propName" = { namespaceDispatcher }
-                    }
-                }
-            }
-            def composerClasses = application.composerClasses*.clazz
-            for (Class composerClass in composerClasses) {
-                MetaClass mc = composerClass.metaClass
-                mc.redirect = redirectObject
-                mc.getSession = sessionObject
-                mc.getExecution = executionObject
-                mc.getParams = paramsObject
-                // the flash object
-                mc.getFlash = flashObject
-                // the bindData method
-                mc.bindData = {Object target, Object args ->
-                    bind.invoke(delegate, BindDynamicMethod.METHOD_SIGNATURE, [target, args] as Object[])
-                }
-                mc.bindData = {Object target, Object args, List disallowed ->
-                    bind.invoke(delegate, BindDynamicMethod.METHOD_SIGNATURE, [target, args, [exclude: disallowed]] as Object[])
-                }
-                mc.bindData = {Object target, Object args, List disallowed, String filter ->
-                    bind.invoke(delegate, BindDynamicMethod.METHOD_SIGNATURE, [target, args, [exclude: disallowed], filter] as Object[])
-                }
-                mc.bindData = {Object target, Object args, Map includeExclude ->
-                    bind.invoke(delegate, BindDynamicMethod.METHOD_SIGNATURE, [target, args, includeExclude] as Object[])
-                }
-                mc.bindData = {Object target, Object args, Map includeExclude, String filter ->
-                    bind.invoke(delegate, BindDynamicMethod.METHOD_SIGNATURE, [target, args, includeExclude, filter] as Object[])
-                }
-                mc.bindData = {Object target, Object args, String filter ->
-                    bind.invoke(delegate, BindDynamicMethod.METHOD_SIGNATURE, [target, args, filter] as Object[])
-                }
-            }
-        }
+        }    
     }
 
     def doWithApplicationContext = { applicationContext ->
@@ -267,26 +182,6 @@ The different is it more likely to use the Grails' infrastructures such as gsp, 
     def onChange = { event ->
         // watching is modified and reloaded. The event contains: event.source,
         // event.application, event.manager, event.ctx, and event.plugin.
-        if (application.isArtefactOfType(ComposerArtefactHandler.TYPE, event.source)) {
-            def context = event.ctx
-            if (!context) {
-                if (log.isDebugEnabled())
-                    log.debug("Application context not found. Can't reload")
-                return
-            }
-            def composerClass = application.addArtefact(ComposerArtefactHandler.TYPE, event.source)
-            def composerBeanName = composerClass.clazz.name
-
-            def beans = beans {
-                "${composerBeanName}"(composerClass.clazz) { bean ->
-                    bean.scope = "prototype"
-                    bean.autowire = "byName"
-                }
-            }
-            beans.registerBeans(event.ctx)
-        }
-
-        event.manager?.getGrailsPlugin("zkui")?.doWithDynamicMethods(event.ctx)
     }
 
     def onConfigChange = { event ->
