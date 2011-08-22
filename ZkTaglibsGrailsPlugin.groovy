@@ -15,13 +15,13 @@ import org.zkoss.zul.impl.InputElement
 
 class ZkTaglibsGrailsPlugin {
     // the plugin version
-    def version = "0.3.1"
+    def version = "1.0-M2"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.2 > *"
     // the other plugins this plugin depends on
     def dependsOn = [:]
 
-    def loadAfter = ['core', 'hibernate', 'controllers']
+    def loadAfter = ['core', 'controllers']
 
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
@@ -36,62 +36,13 @@ class ZkTaglibsGrailsPlugin {
     def authorEmail = "groovyquan[at]gmail[dot]com"
     def title = "Taglibs plugin for ZK"
     def description = '''\\
-ZK UI plugin,the same as the ZKGrails plugin, seamlessly integrates ZK with Grails' infrastructures.
-The different is it more likely to use the Grails' infrastructures such as gsp, controllers rather than zk's zul.
+This is the ZK TagLibs extracted from the ZK UI plugin and made compatible with ZKGrails.
 '''
 
     // URL to the plugin's documentation
     def documentation = "http://grails.org/plugin/zk-taglibs"
 
-    static final String GOSIV_CLASS =
-    "org.grails.plugins.zkui.ZkuiGrailsOpenSessionInViewFilter"
-
     def doWithWebDescriptor = { webXml ->
-        def listenerElement = webXml.'listener'
-        def lastListener = listenerElement[listenerElement.size() - 1]
-        lastListener + {
-            'listener' {
-                'description'("ZK listener for cleanup when a session is destroyed")
-                'listener-class'("org.zkoss.zk.ui.http.HttpSessionListener")
-            }
-        }
-
-        def servletElement = webXml.'servlet'
-        def lastServlet = servletElement[servletElement.size() - 1]
-        lastServlet + {
-            'servlet' {
-                'servlet-name'("auEngine")
-                'servlet-class'("org.zkoss.zk.au.http.DHtmlUpdateServlet")
-            }
-        }
-
-        def mappingElement = webXml.'servlet-mapping'
-        def lastMapping = mappingElement[mappingElement.size() - 1]
-        lastMapping + {
-            'servlet-mapping' {
-                'servlet-name'("auEngine")
-                'url-pattern'("/zkau/*")
-            }
-        }
-
-        // adding GrailsOpenSessionInView
-        if (manager?.hasGrailsPlugin("hibernate")) {
-            def filterElement = webXml.'filter'[0]
-            filterElement + {
-                'filter' {
-                    'filter-name'("GOSIVFilter")
-                    'filter-class'(GOSIV_CLASS)
-                }
-            }
-            // filter for each ZK urls
-            def filterMappingElement = webXml.'filter-mapping'[0]
-            filterMappingElement + {
-                'filter-mapping' {
-                    'filter-name'("GOSIVFilter")
-                    'url-pattern'("/zkau")
-                }
-            }
-        }
     }
 
     def doWithSpring = {
@@ -117,9 +68,11 @@ The different is it more likely to use the Grails' infrastructures such as gsp, 
         org.zkoss.zk.ui.Component.metaClass.select = {String query ->
             return Selector.select(query, delegate)
         }
+        /*
         org.zkoss.zk.ui.Component.metaClass.addEventListener = {String eventName, Closure listenerClosure ->
             return delegate.addEventListener(eventName, listenerClosure as org.zkoss.zk.ui.event.EventListener)
         }
+        */
         org.zkoss.zk.ui.Component.metaClass.getParams = {
             return delegate.select("[name]").inject(new TypeConvertingMap()) {s, c ->
                 def e = s.get(c.name)

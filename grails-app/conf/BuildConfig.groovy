@@ -14,7 +14,8 @@ grails.project.dependency.resolution = {
         grailsHome()
         grailsCentral()
         mavenCentral()
-        mavenRepo "http://mavensync.zkoss.org/maven2/"
+        mavenRepo "http://203.158.7.11/artifactory/repo"
+        mavenRepo "http://zkgrails.googlecode.com/svn/repo"
         // uncomment the below to enable remote dependency resolution
         // from public Maven repositories
         //mavenLocal()
@@ -26,11 +27,12 @@ grails.project.dependency.resolution = {
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
+        def zkVersion = "5.0.8.FL.20110819"
 
-        // runtime 'mysql:mysql-connector-java:5.1.13'
-        runtime 'org.zkoss.zk:zk:5.0.7.1'
-        runtime 'org.zkoss.zk:zul:5.0.7.1'
-        runtime 'org.zkoss.zk:zkplus:5.0.7.1'
-        runtime 'org.zkoss.zk:zhtml:5.0.7.1'
+        runtime "org.zkoss.zk.grails:zk:${zkVersion}"
+        runtime "org.zkoss.zk.grails:zul:${zkVersion}"
+        runtime "org.zkoss.common:zweb:${zkVersion}"
+        // runtime 'org.zkoss.zk:zkplus:5.0.7.1'
+        // runtime 'org.zkoss.zk:zhtml:5.0.7.1'
     }
 }
