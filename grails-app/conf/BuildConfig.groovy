@@ -14,8 +14,9 @@ grails.project.dependency.resolution = {
         grailsHome()
         grailsCentral()
         mavenCentral()
-        mavenRepo "http://203.158.7.11/artifactory/repo"
         mavenRepo "http://zkgrails.googlecode.com/svn/repo"
+        mavenRepo "http://203.158.7.11/artifactory/repo"
+
         // uncomment the below to enable remote dependency resolution
         // from public Maven repositories
         //mavenLocal()
