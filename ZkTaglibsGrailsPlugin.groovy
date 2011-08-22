@@ -6,7 +6,7 @@ import org.codehaus.groovy.grails.web.metaclass.BindDynamicMethod
 import org.codehaus.groovy.grails.web.pages.GroovyPage
 import org.codehaus.groovy.grails.web.pages.TagLibraryLookup
 import org.codehaus.groovy.grails.web.util.TypeConvertingMap
-import org.grails.plugins.zkui.artefacts.ComposerArtefactHandler
+
 import org.grails.plugins.zkui.jsoup.select.Selector
 import org.grails.plugins.zkui.metaclass.RedirectDynamicMethod
 import org.grails.plugins.zkui.util.UriUtil
@@ -32,11 +32,11 @@ class ZkTaglibsGrailsPlugin {
     ]
 
     // TODO Fill in these fields
-    def author = "groovyquan"
-    def authorEmail = "groovyquan[at]gmail[dot]com"
+    def author = "Chanwit Kaewkasi"
+    def authorEmail = "chanwit@gmail.com"
     def title = "Taglibs plugin for ZK"
     def description = '''\\
-This is the ZK TagLibs extracted from the ZK UI plugin and made compatible with ZKGrails.
+This is the ZK TagLibs extracted from the Grails ZK UI plugin. It is made compatible with ZKGrails.
 '''
 
     // URL to the plugin's documentation

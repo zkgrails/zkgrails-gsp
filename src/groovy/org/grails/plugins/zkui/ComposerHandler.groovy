@@ -1,7 +1,6 @@
 package org.grails.plugins.zkui
 
 import org.codehaus.groovy.grails.commons.ApplicationHolder
-import org.grails.plugins.zkui.artefacts.ComposerArtefactHandler
 import org.zkoss.lang.Classes
 import org.zkoss.zk.ui.Component
 import org.zkoss.zk.ui.UiException
@@ -9,6 +8,7 @@ import org.zkoss.zk.ui.util.Composer
 import org.zkoss.zk.ui.util.ComposerExt
 
 class ComposerHandler {
+
     Composer composer
     ComposerExt composerExt
 
@@ -30,12 +30,8 @@ class ComposerHandler {
         if (null == o) return null
         try {
             if (o instanceof String) {
-                if (ApplicationHolder.application.isArtefactOfType(ComposerArtefactHandler.TYPE, o)) {
-                    def composerBean = ApplicationHolder.application.mainContext.getBean(o)
-                    o = new GrailsComposerWrapper(composerBean)
-                } else {
-                    o = Classes.newInstanceByThread(((String) o).trim())
-                }
+                o = ApplicationHolder.application.mainContext.getBean(o)
+                // o = Classes.newInstanceByThread(((String) o).trim())
             } else if (o instanceof Class)
                 o = ((Class) o).newInstance()
             if (o instanceof Composer)
