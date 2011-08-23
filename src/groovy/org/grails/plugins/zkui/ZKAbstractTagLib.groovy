@@ -30,7 +30,7 @@ abstract class ZKAbstractTagLib {
         def composeHandle = new ComposerHandler(attrs.remove("apply"))
         Component component = componentClass.newInstance()
         composeHandle.doBeforeComposeChildren(component)
-        if (!pageScope.variables.containsKey("parents")) {
+        if (pageScope.getVariable("parents")==null) {
             pageScope.parents = new LinkedList<Component>()
             pageScope.parents.push(component)
             doRender(servletContext, request, response, body, pageScope, out, composeHandle, component, attrs)
@@ -126,7 +126,7 @@ abstract class ZKAbstractTagLib {
                 }
             }
             exec.setAttribute(Attributes.PAGE_REDRAW_CONTROL, "page")
-            exec.setAttribute(Attributes.PAGE_RENDERER, new PageRenderer());
+            exec.setAttribute(Attributes.PAGE_RENDERER, new GrailsPageRenderer());
             try {
                 wappc.getUiEngine().execNewPage(exec, richlet, page, out)
             } finally {
