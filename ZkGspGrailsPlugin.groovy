@@ -13,9 +13,9 @@ import org.grails.plugins.zkui.util.UriUtil
 import org.zkoss.zk.ui.Executions
 import org.zkoss.zul.impl.InputElement
 
-class ZkTaglibsGrailsPlugin {
+class ZkGspGrailsPlugin {
     // the plugin version
-    def version = "1.0-M2"
+    def version = "1.0.BUILD-SNAPSHOT"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.2 > *"
     // the other plugins this plugin depends on
@@ -34,13 +34,13 @@ class ZkTaglibsGrailsPlugin {
     // TODO Fill in these fields
     def author = "Chanwit Kaewkasi"
     def authorEmail = "chanwit@gmail.com"
-    def title = "Taglibs plugin for ZK"
+    def title = "GSP TagLibs for ZK"
     def description = '''\\
-This is the ZK TagLibs extracted from the Grails ZK UI plugin. It is made compatible with ZKGrails.
+ZK-GSP TagLibs for ZKGrails.
 '''
 
     // URL to the plugin's documentation
-    def documentation = "http://grails.org/plugin/zk-taglibs"
+    def documentation = "http://grails.org/plugin/zk-gsp"
 
     def doWithWebDescriptor = { webXml ->
     }
@@ -68,11 +68,7 @@ This is the ZK TagLibs extracted from the Grails ZK UI plugin. It is made compat
         org.zkoss.zk.ui.Component.metaClass.select = {String query ->
             return Selector.select(query, delegate)
         }
-        /*
-        org.zkoss.zk.ui.Component.metaClass.addEventListener = {String eventName, Closure listenerClosure ->
-            return delegate.addEventListener(eventName, listenerClosure as org.zkoss.zk.ui.event.EventListener)
-        }
-        */
+
         org.zkoss.zk.ui.Component.metaClass.getParams = {
             return delegate.select("[name]").inject(new TypeConvertingMap()) {s, c ->
                 def e = s.get(c.name)

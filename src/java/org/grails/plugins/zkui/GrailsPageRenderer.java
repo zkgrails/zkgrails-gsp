@@ -11,7 +11,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
 
-class PageRenderer implements org.zkoss.zk.ui.sys.PageRenderer {
+class GrailsPageRenderer implements org.zkoss.zk.ui.sys.PageRenderer {
+
     public void render(Page page, Writer out) throws IOException {
         final Execution exec = Executions.getCurrent();
         final Desktop desktop = exec.getDesktop();

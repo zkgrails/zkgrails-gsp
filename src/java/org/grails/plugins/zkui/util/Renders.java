@@ -196,7 +196,7 @@ public class Renders {
 
             for (Component root = page.getFirstRoot(); root != null;
                  root = root.getNextSibling()) {
-                HtmlPageRenders.outStandalone(_exec, root, out);
+                // HtmlPageRenders.outStandalone(_exec, root, out);
             }
         }
 

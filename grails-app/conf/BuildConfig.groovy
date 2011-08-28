@@ -27,13 +27,9 @@ grails.project.dependency.resolution = {
         //mavenRepo "http://repository.jboss.com/maven2/"
     }
     dependencies {
-        // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
-        def zkVersion = "5.0.8.FL.20110819"
-
-        runtime "org.zkoss.zk.grails:zk:${zkVersion}"
-        runtime "org.zkoss.zk.grails:zul:${zkVersion}"
-        runtime "org.zkoss.common:zweb:${zkVersion}"
-        // runtime 'org.zkoss.zk:zkplus:5.0.7.1'
-        // runtime 'org.zkoss.zk:zhtml:5.0.7.1'
+        // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.        
+    }
+    plugins {
+        runtime ":zk:1.1.BUILD-SNAPSHOT"
     }
 }
