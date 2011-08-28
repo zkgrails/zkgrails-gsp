@@ -4,3 +4,6 @@ target
 plugin.xml
 out
 stacktrace.log
+.eprj
+.org
+grails-zk-*
