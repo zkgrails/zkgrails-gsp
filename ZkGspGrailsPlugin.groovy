@@ -15,7 +15,7 @@ import org.zkoss.zul.impl.InputElement
 
 class ZkGspGrailsPlugin {
     // the plugin version
-    def version = "1.0.BUILD-SNAPSHOT"
+    def version = "1.1.BUILD-SNAPSHOT"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.2 > *"
     // the other plugins this plugin depends on
