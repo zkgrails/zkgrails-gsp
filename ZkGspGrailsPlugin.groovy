@@ -15,9 +15,9 @@ import org.zkoss.zul.impl.InputElement
 
 class ZkGspGrailsPlugin {
     // the plugin version
-    def version = "1.1.M2"
+    def version = "1.0.0.BUILD-SNAPSHOT"
     // the version or versions of Grails the plugin is designed for
-    def grailsVersion = "1.2 > *"
+    def grailsVersion = "2.0 > *"
     // the other plugins this plugin depends on
     def dependsOn = [:]
 
@@ -57,45 +57,6 @@ ZK-GSP TagLibs for ZKGrails.
             return UriUtil.fixToZk(delegate?.toString(), contextPath)
         }
 
-        org.zkoss.zk.ui.Component.metaClass.appendChild = {Closure closure ->
-            def builder = ctx.getBean('zkComponentBuilder')
-            closure.resolveStrategy = Closure.DELEGATE_FIRST
-            builder.build(delegate, closure)
-        }
-        org.zkoss.zk.ui.Component.metaClass.leftShift = {Object value ->
-            delegate.appendChild(value)
-        }
-        org.zkoss.zk.ui.Component.metaClass.select = {String query ->
-            return Selector.select(query, delegate)
-        }
-
-        org.zkoss.zk.ui.Component.metaClass.getParams = {
-            return delegate.select("[name]").inject(new TypeConvertingMap()) {s, c ->
-                def e = s.get(c.name)
-                def value
-                if (c instanceof org.zkoss.zul.Combobox) {
-                    value = c.selectedItem?.value
-                } else if (c instanceof org.zkoss.zul.Checkbox) {
-                    value = c.value ?: c.isChecked()
-                } else if (c instanceof org.zkoss.zul.Listbox) {
-                    value = c.getSelectedItems()?.value as String[]
-                } else {
-                    value = c.value
-                }
-                if (value == null) {
-                    value = ''
-                }
-                if (e == null) {
-                    s.put(c.name, value)
-                } else if (e instanceof Collection) {
-                    e << value
-                } else {
-                    s.put(c.name, [s.remove(c.name), value])
-                }
-                return s
-            }
-        }
-
         def gDispatcher = gspTagLibraryLookup.lookupNamespaceDispatcher(GroovyPage.DEFAULT_NAMESPACE)
         org.zkoss.zk.ui.Component.metaClass.renderErrors = {Map args ->
             if (!args.bean) {
@@ -125,16 +86,11 @@ ZK-GSP TagLibs for ZKGrails.
     }
 
     def doWithApplicationContext = { applicationContext ->
-        // TODO Implement post initialization spring config (optional)
     }
 
     def onChange = { event ->
-        // watching is modified and reloaded. The event contains: event.source,
-        // event.application, event.manager, event.ctx, and event.plugin.
     }
 
     def onConfigChange = { event ->
-        // TODO Implement code that is executed when the project configuration changes.
-        // The event is the same as for 'onChange'.
     }
 }
